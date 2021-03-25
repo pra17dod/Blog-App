@@ -1,5 +1,6 @@
 {% extends 'blog/base.html' %}
 {% block content %}
+    {% if post_list %}
     {% for post in post_list %}
     <article class="media content-section">
         <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
@@ -36,5 +37,8 @@
         {% endif %}
         </div>
     </div>
+    {% else %}
+    <h2> No Posts in database </h2>
+    {% endif %}
 
 {% endblock %}
