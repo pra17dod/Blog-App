@@ -15,8 +15,43 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import *
+from rest_framework.mixins import *
 
-### Rest API Function Based Views
+### Rest API Class Based Views Using Mixin
+
+class PostListMixinAPIView( GenericAPIView, 
+                            ListModelMixin, 
+                            CreateModelMixin ):
+
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+                            
+class PostDetailMixinAPIView(   GenericAPIView,
+                                UpdateModelMixin, 
+                                RetrieveModelMixin, 
+                                DestroyModelMixin ):
+
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
+
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
+
+### Rest API Class Based Views
 
 class PostListAPIView(APIView):
     
@@ -40,7 +75,7 @@ class PostDetailAPIView(APIView):
             return Post.objects.get(id=pk)
         except Post.DoesNotExist:
             raise Http404
-            
+
     def get(self, request, pk, format=None):
         post = self.get_object(pk)
         serializer = PostSerializer(post)
