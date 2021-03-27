@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import *
 from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
+
 
 app_name = 'blog'
 
@@ -17,3 +19,6 @@ urlpatterns = [
     path('api/post/', views.post_list),
     path('api/post/<int:pk>/', views.post_detail),
 ]
+
+### To add format of data in the url
+urlpatterns = format_suffix_patterns(urlpatterns)
