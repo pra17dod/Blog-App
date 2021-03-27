@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import *
 from rest_framework.mixins import *
 # When using Class based views
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 ### Rest API Generic Class Based Views
@@ -30,6 +30,9 @@ class PostListGenericAPIView(ListCreateAPIView):
 class PostDetailGenericAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 ### Rest API Class Based Views Using Mixin
 
