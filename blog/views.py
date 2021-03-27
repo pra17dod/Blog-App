@@ -9,48 +9,49 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
 from .serializers import PostSerializer
 from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.request import Request
+from rest_framework import status
 ### Rest API Function Based Views
 
-@csrf_exempt
+@api_view(['GET', 'POST'])
 def post_list(request):
 
     if request.method == 'GET':
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
-        return JsonResponse(serializer.data, safe = False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PostSerializer(data = data)
+        serializer = PostSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        return JsonResponse(serializer.error, status=400)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
 def post_detail(request, pk):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = PostSerializer(post)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = PostSerializer(post, data= data)
+        serializer = PostSerializer(post, data= request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         post.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 ### Function Based Views
