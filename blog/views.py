@@ -5,6 +5,7 @@ from django.views.generic import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 ### Rest API imports
+
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
 from .serializers import PostSerializer
@@ -13,10 +14,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
+
 ### Rest API Function Based Views
 
 @api_view(['GET', 'POST'])
-def post_list(request):
+def post_list(request, format=None):
 
     if request.method == 'GET':
         posts = Post.objects.all()
@@ -32,7 +34,7 @@ def post_list(request):
         return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def post_detail(request, pk):
+def post_detail(request, pk, format=None):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
@@ -55,6 +57,7 @@ def post_detail(request, pk):
 
 
 ### Function Based Views
+
 def home(request):
     posts = Post.objects.all()
     ctx = { 'posts': posts }
@@ -64,6 +67,7 @@ def about(request):
     return render (request, 'blog/about.html', {'title': 'About'})
 
 ### Class Based Views
+
 class PostListView(ListView):
     model = Post
     # template_name = 'blog/home.html'
