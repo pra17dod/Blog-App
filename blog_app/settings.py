@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'django_heroku',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
