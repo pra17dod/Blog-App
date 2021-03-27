@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'cloudinary',
     'django_heroku',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
