@@ -43,6 +43,7 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), 
         name='password_reset_complete'),
     path('', include('blog.urls')),
+    path('api/', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:
