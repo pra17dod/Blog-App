@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 ### Rest API imports
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework.parsers import JSONParser
 from .serializers import PostSerializer
 from django.views.decorators.csrf import csrf_exempt
@@ -14,6 +14,50 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
+from rest_framework.views import APIView
+
+### Rest API Function Based Views
+
+class PostListAPIView(APIView):
+    
+    def get(self, request, format=None):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    def post(self,request, format=None):
+        serializer = PostSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+
+class PostDetailAPIView(APIView):
+    
+    def get_object(self, pk, format=None):
+        try:
+            return Post.objects.get(id=pk)
+        except Post.DoesNotExist:
+            raise Http404
+            
+    def get(self, request, pk, format=None):
+        post = self.get_object(pk)
+        serializer = PostSerializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, pk, format=None):
+        post = self.get_object(pk)
+        serializer = PostSerializer(post, data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None):
+        post = self.get_object(pk)
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 ### Rest API Function Based Views
 
@@ -66,7 +110,7 @@ def home(request):
 def about(request):
     return render (request, 'blog/about.html', {'title': 'About'})
 
-### Class Based Views
+### Generic Class Based Views
 
 class PostListView(ListView):
     model = Post
