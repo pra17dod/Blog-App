@@ -29,8 +29,6 @@ from rest_framework import viewsets
 class PostListGenericAPIView(ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
 
 class PostCreateGenericAPIView(ListCreateAPIView):
     queryset = Post.objects.none()
