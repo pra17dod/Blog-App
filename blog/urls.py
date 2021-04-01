@@ -23,6 +23,7 @@ urlpatterns = [
     # path('api/post/', PostListMixinAPIView.as_view()),
     # path('api/post/<int:pk>/', PostDetailMixinAPIView.as_view()),
     path('api/post/', PostListGenericAPIView.as_view()),
+    path('api/post/new', PostCreateGenericAPIView.as_view()),
     path('api/post/<int:pk>/', PostDetailGenericAPIView.as_view()),
 ]
 
